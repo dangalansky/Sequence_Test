@@ -1,0 +1,15 @@
+body {
+  background-color: #5075EB;
+  text-align: center;
+  font: "helvetica";
+  font-size: 2.5rem;
+  color: #FFFFFF;
+}
+
+input {
+  padding: 30px;
+}
+
+.pressed {
+  opacity: 0.5;
+}
