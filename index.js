@@ -1,97 +1,76 @@
-var buttons = $("input");
-var compArray = []
-var userArray = []
-var buttonShapes = ["circle", "star", "triangle", "square"]
+// starting variables
+var shapeArray = ["circle", "star", "triangle", "square"];
 
-function chooseRandomShape() {
-  var n = Math.floor(Math.random()* 4);
-  var randomShape =  buttonShapes[n];
+var compArray = [];
+var userArray = [];
+
+var level = 0;
+var game = false;
+
+// functions
+function gameOn() {
+  userArray = [];
+  level++;
+  $("h1").text("level: " + level);
+  var randomNumber = Math.floor(Math.random() * 4);
+  var randomShape = shapeArray[randomNumber];
   compArray.push(randomShape);
+  playSound(randomShape);
+  buttonPressed(randomShape);
 }
 
-for (var i=0; i<compArray.length; i++) {
-  var simonClass = compArray[i];
-  playSound(simonClass);
-}
-
-for (var i=0; i<buttons.length; i++) {
-  buttons[i].addEventListener("click", function () {
-    var simonClass = this.classList[0];
-    console.log(simonClass);
-    playSound(simonClass);
-    userArray.push(simonClass);
-  });
-}
-
-function playSound(simonClass) {
-  switch (simonClass) {
-
-    case "circle":
-      var circle = new Audio("sounds/circle.mp3");
-      circle.play();
-      buttonPressed(simonClass);
-      break;
-
-    case "star":
-      var star = new Audio("sounds/star.mp3");
-      star.play();
-      buttonPressed(simonClass);
-      break;
-
-    case "triangle":
-      var triangle = new Audio("sounds/triangle.mp3");
-      triangle.play();
-      buttonPressed(simonClass);
-      break;
-
-    case "square":
-    var square = new Audio("sounds/square.mp3");
-    square.play();
-    buttonPressed(simonClass);
-    break;
-
-    default: console.log(simonClass);
-
+function checkAnswer(lastResponse) {
+  if (compArray[lastResponse] === userArray[lastResponse]) {
+    if (userArray.length === compArray.length) {
+      setTimeout(function() {
+        gameOn();
+      }, 1000);
+    }
+  } else {
+    var wrong = new Audio("sounds/gameover.mp3");
+    wrong.play();
+    $("h1").text("game over. press a key to restart");
+    $("body").addClass("game-over");
+    setTimeout(function() {
+      $("body").removeClass("game-over");
+    }, 1000);
+    newGame();
   }
+}
+
+function newGame() {
+  level = 0;
+  compArray = [];
+  game = false;
+}
+
+function playSound(shape) {
+  var sound = new Audio("sounds/" + shape + ".mp3");
+  sound.play();
 }
 
 function buttonPressed(key) {
-  var activeButton = document.querySelector("." + key);
-  activeButton.classList.add("pressed");
+  var activeButton = $("." + key);
+  activeButton.addClass("pressed");
   setTimeout(function() {
-    activeButton.classList.remove("pressed");
+    activeButton.removeClass("pressed");
   }, 100);
 }
 
-function simon(n) {
-  if (n === 1) {
-    playSound("circle");
-    compArray.push("circle");
+// game play
+$(document).keydown(function() {
+  if (game === false) {
+    $("h1").text("level" + level);
+    gameOn();
+    game = true;
   }
-  else if (n === 2) {
-    playSound("star");
-    compArray.push("star");
-  }
-  else if (n === 3) {
-    playSound("triangle");
-    compArray.push("triangle");
-  } else {
-    playSound("square");
-    compArray.push("square");
-  }
-}
+});
 
-
-
-$("body").on("keydown", function(){
-  $("h1").text("Repeat the pattern.");
-  while (true) {
-    simon(random());
-    if (userArray === compArray) {
-      simon(random());
-    } else {
-      $("h1").text("Game Over.");
-    }
-  }
-
+$("input").click(function() {
+  var shape = $(this).attr("class");
+  // console.log(shape);
+  playSound(shape);
+  buttonPressed(shape);
+  userArray.push(shape);
+  checkAnswer(userArray.length - 1);
 });

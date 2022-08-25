@@ -1,8 +1,8 @@
 body {
   background-color: #5075EB;
   text-align: center;
-  font: "helvetica";
-  font-size: 2.5rem;
+  font-family: 'Silkscreen', cursive;
+  font-size: 1.5rem;
   color: #FFFFFF;
 }
 
@@ -12,4 +12,8 @@ input {
 
 .pressed {
   opacity: 0.5;
+}
+
+.game-over {
+  background-color: #B30000;
 }
